@@ -630,7 +630,18 @@ const App: React.FC = () => {
                     <div className="email-fields fadein" style={{ display: 'flex' }}>
                       <div className="email-row">
                         <span className="email-row-label">To</span>
-                        <input className="email-row-input" type="email" value={hrEmail} onChange={e => setHrEmail(e.target.value)} placeholder="Recipient email" />
+                        <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center' }}>
+                          <input 
+                            className="email-row-input" 
+                            type="email" 
+                            value={hrEmail} 
+                            onChange={e => setHrEmail(e.target.value)} 
+                            placeholder="Recipient email" 
+                          />
+                          {/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(hrEmail) && (
+                            <span className="fadein" style={{ color: '#22c55e', fontSize: '0.9rem', marginRight: '8px' }}>{ICONS.check}</span>
+                          )}
+                        </div>
                       </div>
                       <div className="email-row" style={{ alignItems: 'flex-start' }}>
                         <span className="email-row-label" style={{ paddingTop: '0.8rem' }}>Subject</span>

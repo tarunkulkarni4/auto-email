@@ -669,7 +669,16 @@ const App: React.FC = () => {
 
         {page === 'profile' && (
           <div className="profile-page on">
-            {authed && (
+            {!authed ? (
+              <div className="profile-locked fadein" style={{ textAlign: 'center', marginTop: '5rem', padding: '2rem' }}>
+                <div style={{ fontSize: '3.5rem', marginBottom: '1.2rem', opacity: 0.7 }}>📧</div>
+                <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.8rem' }}>Gmail Connection Required</h3>
+                <p style={{ color: 'var(--text-muted)', maxWidth: '300px', margin: '0 auto 2rem auto', lineHeight: 1.5 }}>Please connect your Gmail account to unlock and manage your personal job profile.</p>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <button className="btn btn-primary btn-lg" onClick={handleConnectGmail}>{ICONS.mail} Connect Now</button>
+                </div>
+              </div>
+            ) : authed && (
               <div className="profile-inner fadein">
                 {isFetchingProfile ? (
                   <div style={{ padding: '2rem' }}>

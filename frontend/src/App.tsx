@@ -106,14 +106,6 @@ const App: React.FC = () => {
     }
   }, [hasOutput, genStatus]);
 
-  useEffect(() => {
-    const el = document.getElementById('subject-ta') as HTMLTextAreaElement;
-    if (el) {
-      el.style.height = 'auto';
-      el.style.height = el.scrollHeight + 'px';
-    }
-  }, [subject, hasOutput]);
-
   const handleClearAll = () => {
     setPrompt('');
     setOcrText('');
@@ -646,16 +638,15 @@ const App: React.FC = () => {
                           )}
                         </div>
                       </div>
-                      <div className="email-row" style={{ alignItems: 'flex-start' }}>
-                        <span className="email-row-label" style={{ paddingTop: '0.8rem' }}>Subject</span>
-                        <textarea 
-                          id="subject-ta"
+                      <div className="email-row">
+                        <span className="email-row-label">Subject</span>
+                        <input 
                           className="email-row-input" 
-                          style={{ minHeight: '40px' }}
+                          type="text" 
                           value={subject} 
                           onChange={e => setSubject(e.target.value)} 
                           placeholder="Subject line"
-                        ></textarea>
+                        />
                       </div>
                     </div>
                     <div className="email-body-wrap">

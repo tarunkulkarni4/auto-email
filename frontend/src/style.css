@@ -579,7 +579,7 @@ p  { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.65; }
   border-bottom: 1px solid var(--border);
 }
 .email-row {
-  display: flex; align-items: center;
+  display: flex; align-items: flex-start;
   border-bottom: 1px solid var(--border-soft);
   padding: 0 0.875rem;
 }
@@ -587,12 +587,13 @@ p  { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.65; }
 .email-row-label {
   font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em;
   text-transform: uppercase; color: var(--text-muted);
-  min-width: 58px; flex-shrink: 0; padding: 0.6rem 0;
+  min-width: 58px; flex-shrink: 0; padding: 0.85rem 0;
 }
 .email-row-input {
   flex: 1; background: transparent; border: none; outline: none;
-  font-family: 'Outfit', sans-serif; font-size: 0.875rem;
-  color: var(--text-primary); padding: 0.6rem 0.5rem;
+  font-family: 'Outfit', sans-serif; font-size: 0.88rem;
+  color: var(--text-primary); padding: 0.75rem 0.5rem;
+  line-height: 1.4; resize: none; overflow: hidden;
 }
 .email-row-input::placeholder { color: var(--text-muted); }
 

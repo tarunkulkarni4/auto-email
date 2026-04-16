@@ -97,7 +97,6 @@ const App: React.FC = () => {
   
   let toastIdCounter = useRef(0);
 
-  // Auto-scroll on generation or loading
   useEffect(() => {
     if ((hasOutput || genStatus) && outputRef.current) {
       setTimeout(() => {
@@ -105,6 +104,14 @@ const App: React.FC = () => {
       }, 100);
     }
   }, [hasOutput, genStatus]);
+
+  useEffect(() => {
+    const el = document.getElementById('subject-ta') as HTMLTextAreaElement;
+    if (el) {
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    }
+  }, [subject, hasOutput]);
 
   const handleClearAll = () => {
     setPrompt('');
@@ -628,16 +635,12 @@ const App: React.FC = () => {
                       <div className="email-row" style={{ alignItems: 'flex-start' }}>
                         <span className="email-row-label" style={{ paddingTop: '0.8rem' }}>Subject</span>
                         <textarea 
+                          id="subject-ta"
                           className="email-row-input" 
-                          style={{ minHeight: '40px', resize: 'none', paddingTop: '0.8rem', paddingBottom: '0.4rem' }}
+                          style={{ minHeight: '40px' }}
                           value={subject} 
                           onChange={e => setSubject(e.target.value)} 
                           placeholder="Subject line"
-                          onInput={(e) => {
-                             const el = e.target as HTMLTextAreaElement;
-                             el.style.height = 'auto';
-                             el.style.height = el.scrollHeight + 'px';
-                          }}
                         ></textarea>
                       </div>
                     </div>

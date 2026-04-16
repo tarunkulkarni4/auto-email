@@ -13,12 +13,35 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ─── Middleware ────────────────────────────────────────────────
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:5000'
+].filter(Boolean).map(o => o.replace(/\/$/, '')); // Remove trailing slashes
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    const normalizedOrigin = origin.replace(/\/$/, '');
+    if (allowedOrigins.indexOf(normalizedOrigin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      console.warn('⚠️ CORS blocked for origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// ─── Root Route ─────────────────────────────────────────────
+app.get('/', (req, res) => {
+  res.status(200).send('<h1>🚀 AI MailCraft API is live!</h1><p>Connect your frontend to start generating emails.</p>');
+});
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

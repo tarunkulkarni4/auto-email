@@ -91,7 +91,18 @@ const App: React.FC = () => {
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [isUploadingResume, setIsUploadingResume] = useState(false);
   
+  const outputRef = useRef<HTMLDivElement>(null);
+  
   let toastIdCounter = useRef(0);
+
+  // Auto-scroll on generation
+  useEffect(() => {
+    if (hasOutput && outputRef.current) {
+      setTimeout(() => {
+        outputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [hasOutput]);
 
   const addToast = (msg: string, type: ToastType = 'info') => {
     const id = ++toastIdCounter.current;
@@ -559,7 +570,7 @@ const App: React.FC = () => {
 
             </div>
 
-            <div className="pane pane-right">
+            <div className="pane pane-right" ref={outputRef}>
               <div className="pane-head">
                 <span className="pane-title"><SplitText text="Generated Email" /></span>
                 {hasOutput && <button className="btn btn-ghost btn-sm" onClick={handleRegen}>{ICONS.refresh} Regenerate</button>}

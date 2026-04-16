@@ -106,6 +106,25 @@ const App: React.FC = () => {
     }
   }, [hasOutput]);
 
+  const handleClearAll = () => {
+    setPrompt('');
+    setOcrText('');
+    setImageFile(null);
+    setImagePreview('');
+    setOcrBoxVisible(false);
+    setHasOutput(false);
+    setSubject('');
+    setBody('');
+    setHrEmail('');
+    setCompany('');
+    setRole('');
+    setGmailUrl('');
+    localStorage.removeItem('mc-ocr');
+    localStorage.removeItem('mc-prompt');
+    localStorage.removeItem('mc-hasOutput');
+    addToast('All fields cleared for new application.', 'info');
+  };
+
   const addToast = (msg: string, type: ToastType = 'info') => {
     const id = ++toastIdCounter.current;
     setToasts(prev => [...prev, { id, msg, type }]);
@@ -522,6 +541,7 @@ const App: React.FC = () => {
             <div className="pane pane-left">
               <div className="pane-head">
                 <span className="pane-title"><SplitText text="Input" /></span>
+                <button className="btn btn-ghost btn-sm" onClick={handleClearAll} title="Start New Application">{ICONS.plus} New</button>
               </div>
 
               <div className="prompt-container">
@@ -578,7 +598,10 @@ const App: React.FC = () => {
             <div className="pane pane-right" ref={outputRef}>
               <div className="pane-head">
                 <span className="pane-title"><SplitText text="Generated Email" /></span>
-                {hasOutput && <button className="btn btn-ghost btn-sm" onClick={handleRegen}>{ICONS.refresh} Regenerate</button>}
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  {hasOutput && <button className="btn btn-ghost btn-sm" onClick={handleRegen}>{ICONS.refresh} Regen</button>}
+                  <button className="btn btn-ghost btn-sm" onClick={handleClearAll} title="Clear Everything">{ICONS.trash}</button>
+                </div>
               </div>
 
               <div className={`email-card ${hasOutput || genStatus ? 'lit' : ''}`}>

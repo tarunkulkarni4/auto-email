@@ -23,6 +23,7 @@ const ICONS = {
   plus: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
   trash: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>,
   menu: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>,
+  verified: <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>,
 };
 
 type ToastType = 'success' | 'error' | 'info';
@@ -639,7 +640,9 @@ const App: React.FC = () => {
                             placeholder="Recipient email" 
                           />
                           {/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(hrEmail) && (
-                            <span className="fadein" style={{ color: '#22c55e', fontSize: '0.9rem', marginRight: '8px' }}>{ICONS.check}</span>
+                            <span className="fadein" style={{ color: '#22c55e', display: 'flex', alignItems: 'center', marginRight: '8px', filter: 'drop-shadow(0 0 4px rgba(34, 197, 94, 0.3))' }} title="Verified Contact">
+                               <span style={{ width: '16px', height: '16px' }}>{ICONS.verified}</span>
+                            </span>
                           )}
                         </div>
                       </div>

@@ -15,13 +15,8 @@ const getUserProfile = async (req, res) => {
 
     if (!profile) {
       // Create a default profile if none exists
-      profile = await UserProfile.create({
-        name: 'Tarun Kulkarni',
-        education: 'MCA graduate, fresher',
-        skills: ['JavaScript', 'React', 'Node.js', 'MongoDB', 'Express', 'HTML', 'CSS'],
-        phone: '',
-        email: 'yourname@example.com',
         portfolioLink: '',
+        githubLink: '',
       });
     }
 
@@ -47,7 +42,7 @@ const getUserProfile = async (req, res) => {
 // POST /api/user-profile - Create or update user profile
 const updateUserProfile = async (req, res) => {
   try {
-    const { name, education, skills, phone, email, portfolioLink } = req.body;
+    const { name, education, skills, phone, email, portfolioLink, githubLink } = req.body;
 
     // Parse skills if it comes as a comma-separated string
     let parsedSkills = skills;
@@ -65,6 +60,7 @@ const updateUserProfile = async (req, res) => {
       phone: phone || '',
       email: email || 'yourname@example.com',
       portfolioLink: portfolioLink || '',
+      githubLink: githubLink || '',
     };
 
     // Handle resume file upload

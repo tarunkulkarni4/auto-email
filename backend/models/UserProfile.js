@@ -38,6 +38,11 @@ const userProfileSchema = new mongoose.Schema(
       trim: true,
       default: '',
     },
+    githubLink: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     resumePath: {
       type: String,
       default: '',

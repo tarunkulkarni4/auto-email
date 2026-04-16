@@ -91,6 +91,8 @@ const App: React.FC = () => {
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [isUploadingResume, setIsUploadingResume] = useState(false);
   
+  const [githubLink, setGithubLink] = useState('');
+  
   const outputRef = useRef<HTMLDivElement>(null);
   
   let toastIdCounter = useRef(0);
@@ -142,6 +144,7 @@ const App: React.FC = () => {
     setPEmail(p.email || '');
     setPPhone(p.phone || '');
     setPPortfolio(p.portfolioLink || '');
+    setGithubLink(p.githubLink || '');
     setPEdu(p.education || '');
     setSkills(Array.isArray(p.skills) ? p.skills : []);
     setPendingResume(null);
@@ -304,6 +307,7 @@ const App: React.FC = () => {
   const handleParseAndGen = async () => {
     if (!ocrText) return;
     setGenStatus('Analysing job details…');
+    setOcrBoxVisible(false); // Hide immediately
     try {
       const r = await fetch(API + '/extract-details', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -435,6 +439,7 @@ const App: React.FC = () => {
       fd.append('email', pEmail);
       fd.append('phone', pPhone);
       fd.append('portfolioLink', pPortfolio);
+      fd.append('githubLink', githubLink);
       fd.append('education', pEdu);
       skills.forEach(s => fd.append('skills', s));
       if (pendingResume) fd.append('resume', pendingResume);
@@ -677,6 +682,10 @@ const App: React.FC = () => {
                     <div className="form-row">
                       <label className="field-label">Portfolio / LinkedIn</label>
                       <input className="field-input" type="url" value={pPortfolio} onChange={e => setPPortfolio(e.target.value)} placeholder="https://…" />
+                    </div>
+                    <div className="form-row">
+                      <label className="field-label">GitHub URL</label>
+                      <input className="field-input" type="url" value={githubLink} onChange={e => setGithubLink(e.target.value)} placeholder="https://github.com/…" />
                     </div>
                     <div className="form-row full">
                       <label className="field-label">Education</label>

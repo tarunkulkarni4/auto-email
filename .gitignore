@@ -1,0 +1,31 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Secrets
+credentials.json
+token.json
+
+# Builds
+dist/
+build/
+.cache/
+
+# Uploads & Temp
+**/uploads/*
+!**/uploads/.gitkeep
+temp/
+scripts/
+
+# OS
+.DS_Store
+Thumbs.db

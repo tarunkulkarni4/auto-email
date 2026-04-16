@@ -15,6 +15,12 @@ const getUserProfile = async (req, res) => {
 
     if (!profile) {
       // Create a default profile if none exists
+      profile = await UserProfile.create({
+        name: 'Tarun Kulkarni',
+        education: 'MCA graduate, fresher',
+        skills: ['JavaScript', 'React', 'Node.js', 'MongoDB', 'Express', 'HTML', 'CSS'],
+        phone: '',
+        email: 'yourname@example.com',
         portfolioLink: '',
         githubLink: '',
       });

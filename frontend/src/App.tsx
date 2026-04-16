@@ -97,14 +97,14 @@ const App: React.FC = () => {
   
   let toastIdCounter = useRef(0);
 
-  // Auto-scroll on generation
+  // Auto-scroll on generation or loading
   useEffect(() => {
-    if (hasOutput && outputRef.current) {
+    if ((hasOutput || genStatus) && outputRef.current) {
       setTimeout(() => {
         outputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
     }
-  }, [hasOutput]);
+  }, [hasOutput, genStatus]);
 
   const handleClearAll = () => {
     setPrompt('');
@@ -625,9 +625,20 @@ const App: React.FC = () => {
                         <span className="email-row-label">To</span>
                         <input className="email-row-input" type="email" value={hrEmail} onChange={e => setHrEmail(e.target.value)} placeholder="Recipient email" />
                       </div>
-                      <div className="email-row">
-                        <span className="email-row-label">Subject</span>
-                        <input className="email-row-input" type="text" value={subject} onChange={e => setSubject(e.target.value)} placeholder="Subject line" />
+                      <div className="email-row" style={{ alignItems: 'flex-start' }}>
+                        <span className="email-row-label" style={{ paddingTop: '0.8rem' }}>Subject</span>
+                        <textarea 
+                          className="email-row-input" 
+                          style={{ minHeight: '40px', resize: 'none', paddingTop: '0.8rem', paddingBottom: '0.4rem' }}
+                          value={subject} 
+                          onChange={e => setSubject(e.target.value)} 
+                          placeholder="Subject line"
+                          onInput={(e) => {
+                             const el = e.target as HTMLTextAreaElement;
+                             el.style.height = 'auto';
+                             el.style.height = el.scrollHeight + 'px';
+                          }}
+                        ></textarea>
                       </div>
                     </div>
                     <div className="email-body-wrap">

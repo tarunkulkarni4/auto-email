@@ -678,111 +678,119 @@ const App: React.FC = () => {
               <div className="card">
                 <div className="card-head">
                   <div className="card-head-icon">{ICONS.user}</div>
-                  <h3>Personal Information</h3>
+            {!authed ? (
+              <div className="profile-locked fadein" style={{ textAlign: 'center', marginTop: '4rem', padding: '2rem', background: 'var(--bg-1)', borderRadius: '20px', border: '1px solid var(--border)', maxWidth: '400px', height: 'fit-content' }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1.5rem', opacity: 0.8 }}>🔐</div>
+                <h3 style={{ marginBottom: '0.8rem', color: 'var(--text-primary)' }}>Profile Locked</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '2rem', lineHeight: 1.5 }}>Please connect your Gmail account to view and manage your job application profile.</p>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <button className="btn btn-primary btn-lg" style={{ width: '100%' }} onClick={handleConnectGmail}>
+                    {ICONS.mail} Connect Gmail
+                  </button>
                 </div>
-                <div className="card-body">
-                  {isFetchingProfile ? (
-                    <div className="grid-2 fadein">
-                      <div className="skeleton skeleton-input"></div>
-                      <div className="skeleton skeleton-input"></div>
-                      <div className="skeleton skeleton-input"></div>
-                      <div className="skeleton skeleton-input"></div>
-                    </div>
-                  ) : (
-                    <div className="grid-2">
+              </div>
+            ) : isFetchingProfile ? (
+              <div className="profile-inner fadein" style={{ opacity: 0.5 }}>
+                 <div className="profile-head"><span className="profile-title">Loading Profile…</span></div>
+                 <div className="card"><div className="card-body"><div className="skeleton skeleton-input"></div></div></div>
+              </div>
+            ) : (
+              <div className="profile-inner fadein">
+                <div className="profile-head">
+                  <span className="profile-title"><SplitText text="Personal Details" /></span>
+                </div>
+                
+                <div className="card">
+                  <div className="card-body">
+                    <div className="form-grid">
                       <div className="form-row">
-                      <label className="field-label">Full name *</label>
-                      <input className="field-input" type="text" value={pName} onChange={e => setPName(e.target.value)} placeholder="Your full name" />
-                    </div>
-                    <div className="form-row">
-                      <label className="field-label">Email address *</label>
-                      <input className="field-input" type="email" value={pEmail} onChange={e => setPEmail(e.target.value)} placeholder="you@email.com" />
-                    </div>
-                    <div className="form-row">
-                      <label className="field-label">Phone</label>
-                      <input className="field-input" type="tel" value={pPhone} onChange={e => setPPhone(e.target.value)} placeholder="+91 99999 88888" />
-                    </div>
-                    <div className="form-row">
-                      <label className="field-label">Portfolio / LinkedIn</label>
-                      <input className="field-input" type="url" value={pPortfolio} onChange={e => setPPortfolio(e.target.value)} placeholder="https://…" />
-                    </div>
-                    <div className="form-row">
-                      <label className="field-label">GitHub URL</label>
-                      <input className="field-input" type="url" value={githubLink} onChange={e => setGithubLink(e.target.value)} placeholder="https://github.com/…" />
-                    </div>
-                    <div className="form-row full">
-                      <label className="field-label">Education</label>
-                      <input className="field-input" type="text" value={pEdu} onChange={e => setPEdu(e.target.value)} placeholder="e.g. MCA graduate" />
-                    </div>
-                    <div className="form-row full">
-                      <label className="field-label">Skills <small style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 400, color: 'var(--text-muted)' }}>(Enter or comma to add)</small></label>
-                      <div className="skills-wrap" onClick={(e) => { if ((e.target as any).tagName !== 'BUTTON') document.getElementById('skIn')?.focus(); }}>
-                        {skills.map(sk => (
-                          <span className="skill-chip" key={sk}>{sk}<button type="button" onClick={() => setSkills(skills.filter(s => s !== sk))}>×</button></span>
-                        ))}
-                        <input 
-                           id="skIn" className="skill-in" placeholder="Type a skill…" 
-                           value={skillIn} onChange={e => setSkillIn(e.target.value)}
-                           onKeyDown={(e) => {
-                             if (e.key === 'Enter' || e.key === ',') {
-                               e.preventDefault();
-                               const val = skillIn.replace(',', '').trim();
-                               if (val && !skills.includes(val)) {
-                                 setSkills([...skills, val]);
+                        <label className="field-label">Full Name</label>
+                        <input className="field-input" type="text" value={pName} onChange={e => setPName(e.target.value)} placeholder="Tarun Kulkarni" />
+                      </div>
+                      <div className="form-row">
+                        <label className="field-label">Email Address</label>
+                        <input className="field-input" type="email" value={pEmail} onChange={e => setPEmail(e.target.value)} placeholder="tarun@example.com" />
+                      </div>
+                      <div className="form-row">
+                        <label className="field-label">Phone Number</label>
+                        <input className="field-input" type="tel" value={pPhone} onChange={e => setPPhone(e.target.value)} placeholder="+91 98..." />
+                      </div>
+                      <div className="form-row">
+                        <label className="field-label">Portfolio / LinkedIn</label>
+                        <input className="field-input" type="url" value={pPortfolio} onChange={e => setPPortfolio(e.target.value)} placeholder="https://…" />
+                      </div>
+                      <div className="form-row">
+                        <label className="field-label">GitHub URL</label>
+                        <input className="field-input" type="url" value={githubLink} onChange={e => setGithubLink(e.target.value)} placeholder="https://github.com/…" />
+                      </div>
+                      <div className="form-row full">
+                        <label className="field-label">Education</label>
+                        <input className="field-input" type="text" value={pEdu} onChange={e => setPEdu(e.target.value)} placeholder="e.g. MCA graduate" />
+                      </div>
+                      <div className="form-row full">
+                        <label className="field-label">Skills <small style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 400, color: 'var(--text-muted)' }}>(Enter or comma to add)</small></label>
+                        <div className="skills-wrap" onClick={(e) => { if ((e.target as any).tagName !== 'BUTTON') document.getElementById('skIn')?.focus(); }}>
+                          {skills.map(sk => (
+                            <span className="skill-chip" key={sk}>{sk}<button type="button" onClick={() => setSkills(skills.filter(s => s !== sk))}>×</button></span>
+                          ))}
+                          <input 
+                             id="skIn" className="skill-in" placeholder="Type a skill…" 
+                             value={skillIn} onChange={e => setSkillIn(e.target.value)}
+                             onKeyDown={(e) => {
+                               if (e.key === 'Enter' || e.key === ',') {
+                                 e.preventDefault();
+                                 const val = skillIn.replace(',', '').trim();
+                                 if (val && !skills.includes(val)) {
+                                   setSkills([...skills, val]);
+                                 }
+                                 setSkillIn('');
+                               } else if (e.key === 'Backspace' && !skillIn && skills.length) {
+                                 setSkills(skills.slice(0, -1));
                                }
-                               setSkillIn('');
-                             } else if (e.key === 'Backspace' && !skillIn && skills.length) {
-                               setSkills(skills.slice(0, -1));
-                             }
-                           }}
-                           onBlur={() => {
-                             const val = skillIn.replace(',', '').trim();
-                             if (val && !skills.includes(val)) setSkills([...skills, val]);
-                             setSkillIn('');
-                           }}
-                        />
+                             }}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
+                </div>
+
+                <div className="card">
+                  <div className="card-head">
+                    <div className="card-head-icon">{ICONS.file}</div>
+                    <h3>Resume</h3>
+                  </div>
+                  <div className="card-body">
+                    <div 
+                      className={`resume-drop ${resumeDropHover ? 'over' : ''} ${isUploadingResume ? 'uploading' : ''}`}
+                      onDragOver={(e) => { e.preventDefault(); setResumeDropHover(true); }}
+                      onDragLeave={() => setResumeDropHover(false)}
+                      onDrop={(e) => { 
+                        e.preventDefault(); setResumeDropHover(false); 
+                        const f = e.dataTransfer.files[0];
+                        if (f && !isUploadingResume) handleResumeSelect(f);
+                      }}
+                    >
+                      <input type="file" accept=".pdf" disabled={isUploadingResume} onChange={(e) => { if (e.target.files?.[0]) handleResumeSelect(e.target.files[0]); }} />
+                      <p style={{ color: pendingResume || profile?.resumeOriginalName ? 'var(--success-text)' : 'inherit', fontSize: '0.84rem' }}>
+                         {isUploadingResume 
+                           ? 'Uploading and analyzing document…' 
+                           : (pendingResume ? pendingResume.name : (profile?.resumeOriginalName || 'PDF only · up to 10 MB · click or drag'))}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="profile-footer">
+                  <button className="btn btn-ghost" disabled={isSavingProfile} onClick={() => { if(profile){syncProfile(profile); addToast('Reset to saved values.', 'info');} }}>Reset</button>
+                  {isSavingProfile ? (
+                    <button className="btn btn-primary btn-lg skeleton" disabled></button>
+                  ) : (
+                    <button className="btn btn-primary btn-lg" onClick={handleSaveProfile}>Save profile</button>
                   )}
                 </div>
               </div>
-
-              <div className="card">
-                <div className="card-head">
-                  <div className="card-head-icon">{ICONS.file}</div>
-                  <h3>Resume</h3>
-                </div>
-                <div className="card-body">
-                  <div 
-                    className={`resume-drop ${resumeDropHover ? 'over' : ''} ${isUploadingResume ? 'uploading' : ''}`}
-                    onDragOver={(e) => { e.preventDefault(); setResumeDropHover(true); }}
-                    onDragLeave={() => setResumeDropHover(false)}
-                    onDrop={(e) => { 
-                      e.preventDefault(); setResumeDropHover(false); 
-                      const f = e.dataTransfer.files[0];
-                      if (f && !isUploadingResume) handleResumeSelect(f);
-                    }}
-                  >
-                    <input type="file" accept=".pdf" disabled={isUploadingResume} onChange={(e) => { if (e.target.files?.[0]) handleResumeSelect(e.target.files[0]); }} />
-                    <p style={{ color: pendingResume || profile?.resumeOriginalName ? 'var(--success-text)' : 'inherit', fontSize: '0.84rem' }}>
-                       {isUploadingResume 
-                         ? 'Uploading and analyzing document…' 
-                         : (pendingResume ? pendingResume.name : (profile?.resumeOriginalName || 'PDF only · up to 10 MB · click or drag'))}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="profile-footer">
-                <button className="btn btn-ghost" disabled={isSavingProfile} onClick={() => { if(profile){syncProfile(profile); addToast('Reset to saved values.', 'info');} }}>Reset</button>
-                {isSavingProfile ? (
-                  <button className="btn btn-primary btn-lg skeleton" disabled></button>
-                ) : (
-                  <button className="btn btn-primary btn-lg" onClick={handleSaveProfile}>Save profile</button>
-                )}
-              </div>
-            </div>
+            )}
           </div>
         )}
       </div>

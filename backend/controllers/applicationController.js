@@ -136,8 +136,13 @@ const generateEmail = async (req, res) => {
     if (profile.resumePath) {
       const fs = require('fs');
       const filenameOnly = path.basename(profile.resumePath);
-      const fullPath = path.join(__dirname, '..', 'uploads', filenameOnly);
+      const uploadsDir = path.join(__dirname, '..', 'uploads');
+      const fullPath = path.join(uploadsDir, filenameOnly);
       resumeAttached = fs.existsSync(fullPath);
+      if (!resumeAttached && fs.existsSync(uploadsDir)) {
+        const files = fs.readdirSync(uploadsDir);
+        resumeAttached = !!files.find(f => f.startsWith('resume-') && f.endsWith('.pdf'));
+      }
     }
 
     res.status(200).json({

@@ -137,20 +137,37 @@ const createDraft = async (req, res) => {
     const fromEmail = await gmailService.getUserEmail();
 
     // Determine resume path
+    // Determine resume path
     let resumePath = null;
     let resumeName = null;
     if (profile && profile.resumePath) {
       // resumePath in DB is just the filename now. If it has slashes, extract filename anyway.
       const filenameOnly = path.basename(profile.resumePath);
-      const fullResumePath = path.join(__dirname, '..', 'uploads', filenameOnly);
+      const uploadsDir = path.join(__dirname, '..', 'uploads');
+      const fullResumePath = path.join(uploadsDir, filenameOnly);
       const fs = require('fs');
+      
       console.log('🔍 Checking resume path:', fullResumePath);
       if (fs.existsSync(fullResumePath)) {
         console.log('✅ Resume file found!');
         resumePath = fullResumePath;
         resumeName = profile.resumeOriginalName || 'Resume.pdf';
       } else {
-        console.error('❌ Resume file NOT found at:', fullResumePath);
+        console.error('❌ Expected Resume file NOT found at:', fullResumePath);
+        // Fallback: If running locally and DB is out of sync with local disk, 
+        // try to find ANY uploaded resume in the directory to attach.
+        if (fs.existsSync(uploadsDir)) {
+          console.log('⚠️ Attempting fallback to grab any local resume...');
+          const files = fs.readdirSync(uploadsDir);
+          const pdfFile = files.find(f => f.startsWith('resume-') && f.endsWith('.pdf'));
+          if (pdfFile) {
+            resumePath = path.join(uploadsDir, pdfFile);
+            resumeName = profile.resumeOriginalName || 'Resume.pdf';
+            console.log('✅ Fallback successful! Used local file:', pdfFile);
+          } else {
+            console.log('❌ No fallback resume PDFs found locally.');
+          }
+        }
       }
     } else {
       console.log('❌ No resumePath found in profile DB.');

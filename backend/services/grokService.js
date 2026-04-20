@@ -117,14 +117,15 @@ STRUCTURE:
 - P1: Introduction & background.
 - P2: Why this role/company + matching skills.
 - P3: Resume mention & interview request.
-- Signature: Separated by double newline. Name, Phone, and Portfolio Link each on a new line.
+- Signature: Name, Phone, and Portfolio Link each on a new line.
 
 Respond with valid JSON: { "subject": "...", "body": "..." }
 STRICT FORMATTING: 
-- DO NOT word-wrap the text. Each paragraph MUST be a single continuous continuous line.
+- Format the body exactly like a real email.
+- You MUST leave a blank empty line after the Greeting. "Dear Hiring Manager,\\n\\nI am..."
+- You MUST leave a blank empty line between P1, P2, and P3.
+- You MUST leave a blank empty line before the Signature block.
 - DO NOT use literal newlines (Enter key) inside JSON strings. Use \\n instead.
-- Use double line breaks (\\n\\n) between EVERY section (Greeting to P1, P1 to P2, etc.).
-- Use single line breaks (\\n) ONLY for signature lines.
 - Ensure the portfolio link "${portfolioLink}" is at the very end.
 - Use a professional, human-like tone, avoid being overly repetitive.
 - Make the email sufficiently different from previous variations (be creative).`;

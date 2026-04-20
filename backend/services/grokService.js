@@ -124,7 +124,7 @@ STRUCTURE:
 
 Respond with valid JSON: { "subject": "...", "body": "..." }
 STRICT FORMATTING: 
-- You MUST provide DOUBLE NEWLINES (\\n\\n) to separate every paragraph and the greeting!
+- You MUST provide EXACTLY ONE empty line (\\n\\n) to separate every paragraph and the greeting! DO NOT use excessive newlines.
 - Ensure the portfolio link "${portfolioLink}" is at the very end.
 - Use a professional tone that is ${randomStyle}.
 - Ensure the wording is completely different from a standard template! Be highly unique.`;
@@ -148,12 +148,14 @@ Generate a uniquely phrased version with tone: ${randomStyle}. Salt: ${Date.now(
       let cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       
       const formatBodySpacing = (text) => {
-        // If the AI only used single newlines, force them to double newlines for spacing
-        // (but ignore multiple existing newlines)
-        if (!text.includes('\n\n') && text.includes('\n')) {
-           return text.replace(/\n/g, '\n\n');
+        // Force replace 3 or more newlines into exactly 2 newlines (to fix AI outputting \n\n\n\n)
+        let formatted = text.replace(/\n{3,}/g, '\n\n');
+        
+        // If the AI somehow ONLY used single newlines, expand them
+        if (!formatted.includes('\n\n') && formatted.includes('\n')) {
+           return formatted.replace(/\n/g, '\n\n');
         }
-        return text;
+        return formatted;
       };
 
       try {

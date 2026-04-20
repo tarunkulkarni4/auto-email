@@ -28,7 +28,7 @@ class GrokService {
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt },
           ],
-          temperature: 0.7,
+          temperature: 0.9,
           max_tokens: 1024,
         }),
       });
@@ -121,11 +121,13 @@ STRUCTURE:
 
 Respond with valid JSON: { "subject": "...", "body": "..." }
 STRICT FORMATTING: 
+- DO NOT word-wrap the text. Each paragraph MUST be a single continuous continuous line.
 - DO NOT use literal newlines (Enter key) inside JSON strings. Use \\n instead.
 - Use double line breaks (\\n\\n) between EVERY section (Greeting to P1, P1 to P2, etc.).
 - Use single line breaks (\\n) ONLY for signature lines.
 - Ensure the portfolio link "${portfolioLink}" is at the very end.
-- Use a professional, human-like tone, avoid being overly repetitive.`;
+- Use a professional, human-like tone, avoid being overly repetitive.
+- Make the email sufficiently different from previous variations (be creative).`;
 
     const userPrompt = `Generate an application email with these details:
 - Name: ${name}
@@ -135,7 +137,9 @@ STRICT FORMATTING:
 - Portfolio: ${portfolioLink}
 - Company: ${company}
 - Role: ${role}
-- Job Description: ${jobDescription}`;
+- Job Description: ${jobDescription}
+
+Generate a uniquely phrased version. Salt: ${Date.now()}`;
 
     const response = await this.chatCompletion(systemPrompt, userPrompt);
 

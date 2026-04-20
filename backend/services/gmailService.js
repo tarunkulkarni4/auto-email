@@ -48,7 +48,9 @@ class GmailService {
 
       // PDF attachment part
       const fileContent = fs.readFileSync(attachmentPath);
-      const base64File = fileContent.toString('base64');
+      let base64File = fileContent.toString('base64');
+      // Break base64 string into 76 character lines per RFC 2822
+      base64File = base64File.match(/.{1,76}/g)?.join('\r\n') || base64File;
       const fileName = attachmentName || path.basename(attachmentPath);
 
       message += `--${boundary}\r\n`;

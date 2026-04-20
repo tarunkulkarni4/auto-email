@@ -142,10 +142,16 @@ const createDraft = async (req, res) => {
     if (profile && profile.resumePath) {
       const fullResumePath = path.resolve(profile.resumePath);
       const fs = require('fs');
+      console.log('🔍 Checking resume path:', fullResumePath);
       if (fs.existsSync(fullResumePath)) {
+        console.log('✅ Resume file found!');
         resumePath = fullResumePath;
         resumeName = profile.resumeOriginalName || 'Resume.pdf';
+      } else {
+        console.error('❌ Resume file NOT found at:', fullResumePath);
       }
+    } else {
+      console.log('❌ No resumePath found in profile DB.');
     }
 
     // Create Gmail draft

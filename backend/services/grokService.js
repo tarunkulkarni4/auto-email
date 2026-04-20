@@ -101,6 +101,9 @@ For job_description, provide a concise summary of requirements and responsibilit
    * @returns {Promise<Object>} Generated email { subject, body }
    */
   async generateEmail({ name, education, skills, phone, portfolioLink, company, role, jobDescription }) {
+    const styles = ['enthusiastic and modern', 'highly formal and traditional', 'direct and concise', 'confident and analytical'];
+    const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+
     const systemPrompt = `You are a professional email writer for job applications.
 Generate a concise, professional job application email.
 
@@ -121,14 +124,10 @@ STRUCTURE:
 
 Respond with valid JSON: { "subject": "...", "body": "..." }
 STRICT FORMATTING: 
-- Format the body exactly like a real email.
-- You MUST leave a blank empty line after the Greeting. "Dear Hiring Manager,\\n\\nI am..."
-- You MUST leave a blank empty line between P1, P2, and P3.
-- You MUST leave a blank empty line before the Signature block.
-- DO NOT use literal newlines (Enter key) inside JSON strings. Use \\n instead.
+- You MUST provide DOUBLE NEWLINES (\\n\\n) to separate every paragraph and the greeting!
 - Ensure the portfolio link "${portfolioLink}" is at the very end.
-- Use a professional, human-like tone, avoid being overly repetitive.
-- Make the email sufficiently different from previous variations (be creative).`;
+- Use a professional tone that is ${randomStyle}.
+- Ensure the wording is completely different from a standard template! Be highly unique.`;
 
     const userPrompt = `Generate an application email with these details:
 - Name: ${name}
@@ -140,7 +139,7 @@ STRICT FORMATTING:
 - Role: ${role}
 - Job Description: ${jobDescription}
 
-Generate a uniquely phrased version. Salt: ${Date.now()}`;
+Generate a uniquely phrased version with tone: ${randomStyle}. Salt: ${Date.now()}`;
 
     const response = await this.chatCompletion(systemPrompt, userPrompt);
 
@@ -148,28 +147,29 @@ Generate a uniquely phrased version. Salt: ${Date.now()}`;
       // 1. Basic cleaning
       let cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       
-      // 2. Fix literal newlines: Check if there are raw newlines inside what should be a JSON string
-      // This is a common AI error where it doesn't escape \n as \\n
+      const formatBodySpacing = (text) => {
+        // If the AI only used single newlines, force them to double newlines for spacing
+        // (but ignore multiple existing newlines)
+        if (!text.includes('\n\n') && text.includes('\n')) {
+           return text.replace(/\n/g, '\n\n');
+        }
+        return text;
+      };
+
       try {
-        return JSON.parse(cleaned);
+        const parsed = JSON.parse(cleaned);
+        if (parsed.body) parsed.body = formatBodySpacing(parsed.body);
+        return parsed;
       } catch (e) {
-        // Attempt to escape literal newlines and tabs that break JSON.parse
-        const fixed = cleaned
-          .replace(/\n/g, '\\n')    // Escape actual newlines
-          .replace(/\t/g, '\\t')    // Escape actual tabs
-          .replace(/\\n\s*{\\n/g, '{') // Fix accidental escaping of structural braces
-          .replace(/\\n\s*}\\n/g, '}') 
-          .replace(/\\n\s*"/g, '"');
-          
-        // Re-try parsing. If this fails, we fall back to the main catch block.
-        // Actually, a safer way to handle this is to extract properties via Regex if JSON failing
+        // Fallback regex parsing
         const subjectMatch = cleaned.match(/"subject":\s*"(.*?)"/s);
         const bodyMatch = cleaned.match(/"body":\s*"(.*?)"/s);
         
         if (subjectMatch && bodyMatch) {
+          let parsedBody = bodyMatch[1].replace(/\\n/g, '\n').trim();
           return {
             subject: subjectMatch[1].replace(/\\n/g, '\n').trim(),
-            body: bodyMatch[1].replace(/\\n/g, '\n').trim()
+            body: formatBodySpacing(parsedBody)
           };
         }
         throw e;

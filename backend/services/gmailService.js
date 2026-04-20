@@ -41,10 +41,14 @@ class GmailService {
 
       // HTML body part
       const htmlBody = body.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+      // Encode body into Base64 to safely handle all characters and line lengths without violating 7bit SMTP rules
+      let base64Body = Buffer.from(htmlBody, 'utf8').toString('base64');
+      base64Body = base64Body.match(/.{1,76}/g)?.join('\r\n') || base64Body;
+
       message += `--${boundary}\r\n`;
       message += `Content-Type: text/html; charset="UTF-8"\r\n`;
-      message += `Content-Transfer-Encoding: 7bit\r\n\r\n`;
-      message += `${htmlBody}\r\n\r\n`;
+      message += `Content-Transfer-Encoding: base64\r\n\r\n`;
+      message += `${base64Body}\r\n\r\n`;
 
       // PDF attachment part
       const fileContent = fs.readFileSync(attachmentPath);
@@ -52,6 +56,8 @@ class GmailService {
       // Break base64 string into 76 character lines per RFC 2822
       base64File = base64File.match(/.{1,76}/g)?.join('\r\n') || base64File;
       const fileName = attachmentName || path.basename(attachmentPath);
+      
+      console.log(`📎 Attaching file: ${fileName}, Base64 Length: ${base64File.length}`);
 
       message += `--${boundary}\r\n`;
       message += `Content-Type: application/pdf; name="${fileName}"\r\n`;
@@ -63,8 +69,12 @@ class GmailService {
     } else {
       // HTML message without attachment
       const htmlBody = body.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
-      message += `Content-Type: text/html; charset="UTF-8"\r\n\r\n`;
-      message += htmlBody;
+      let base64Body = Buffer.from(htmlBody, 'utf8').toString('base64');
+      base64Body = base64Body.match(/.{1,76}/g)?.join('\r\n') || base64Body;
+
+      message += `Content-Type: text/html; charset="UTF-8"\r\n`;
+      message += `Content-Transfer-Encoding: base64\r\n\r\n`;
+      message += `${base64Body}\r\n`;
     }
 
     // Convert to base64url encoding (Gmail API requirement)

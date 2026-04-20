@@ -140,7 +140,9 @@ const createDraft = async (req, res) => {
     let resumePath = null;
     let resumeName = null;
     if (profile && profile.resumePath) {
-      const fullResumePath = path.resolve(profile.resumePath);
+      // resumePath in DB is just the filename now. If it has slashes, extract filename anyway.
+      const filenameOnly = path.basename(profile.resumePath);
+      const fullResumePath = path.join(__dirname, '..', 'uploads', filenameOnly);
       const fs = require('fs');
       console.log('🔍 Checking resume path:', fullResumePath);
       if (fs.existsSync(fullResumePath)) {

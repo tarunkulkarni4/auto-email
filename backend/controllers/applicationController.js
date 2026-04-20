@@ -131,6 +131,15 @@ const generateEmail = async (req, res) => {
     });
     await application.save();
 
+    // Check if resume physically exists locally
+    let resumeAttached = false;
+    if (profile.resumePath) {
+      const fs = require('fs');
+      const filenameOnly = path.basename(profile.resumePath);
+      const fullPath = path.join(__dirname, '..', 'uploads', filenameOnly);
+      resumeAttached = fs.existsSync(fullPath);
+    }
+
     res.status(200).json({
       success: true,
       data: {
@@ -138,7 +147,7 @@ const generateEmail = async (req, res) => {
         to: hrEmail || '',
         subject: emailData.subject,
         body: emailData.body,
-        resumeAttached: !!profile.resumePath,
+        resumeAttached,
         resumeName: profile.resumeOriginalName || 'Resume.pdf',
       },
     });

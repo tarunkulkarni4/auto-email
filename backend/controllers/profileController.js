@@ -71,7 +71,7 @@ const updateUserProfile = async (req, res) => {
 
     // Handle resume file upload
     if (req.file) {
-      updateData.resumePath = req.file.path;
+      updateData.resumePath = req.file.filename;
       updateData.resumeOriginalName = req.file.originalname;
     }
 

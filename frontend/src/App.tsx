@@ -56,6 +56,7 @@ const App: React.FC = () => {
   const [subject, setSubject] = useState(() => localStorage.getItem('mc-subject') || '');
   const [body, setBody] = useState(() => localStorage.getItem('mc-body') || '');
   const [resumeAttached, setResumeAttached] = useState(() => localStorage.getItem('mc-resumeAttached') === 'true');
+  const [hasProfileResume, setHasProfileResume] = useState(() => localStorage.getItem('mc-hasProfileResume') === 'true');
   const [resumeName, setResumeName] = useState(() => localStorage.getItem('mc-resumeName') || '');
   const [gmailUrl, setGmailUrl] = useState(() => localStorage.getItem('mc-gmailUrl') || '');
 
@@ -63,7 +64,6 @@ const App: React.FC = () => {
 
   // Persistence Effect
   useEffect(() => {
-    // localStorage.setItem('mc-preview', imagePreview); // REMOVE THIS: blob URLs are not stable across refreshes
     localStorage.setItem('mc-ocr', ocrText);
     localStorage.setItem('mc-prompt', prompt);
     localStorage.setItem('mc-hasOutput', hasOutput.toString());
@@ -74,9 +74,10 @@ const App: React.FC = () => {
     localStorage.setItem('mc-subject', subject);
     localStorage.setItem('mc-body', body);
     localStorage.setItem('mc-resumeAttached', resumeAttached.toString());
+    localStorage.setItem('mc-hasProfileResume', hasProfileResume.toString());
     localStorage.setItem('mc-resumeName', resumeName);
     localStorage.setItem('mc-gmailUrl', gmailUrl);
-  }, [imagePreview, ocrText, prompt, hasOutput, hrEmail, company, role, jobDesc, subject, body, resumeAttached, resumeName, gmailUrl]);
+  }, [imagePreview, ocrText, prompt, hasOutput, hrEmail, company, role, jobDesc, subject, body, resumeAttached, hasProfileResume, resumeName, gmailUrl]);
   
   // Profile
   const [profile, setProfile] = useState<any>(null);
@@ -386,11 +387,17 @@ const App: React.FC = () => {
       setSubject(d.data.subject);
       setBody(d.data.body);
       setResumeAttached(d.data.resumeAttached);
+      setHasProfileResume(d.data.hasResumeInProfile);
       setResumeName(d.data.resumeName);
       setHasOutput(true);
       setGenStatus('');
       
-      addToast('Email generated. Review it and send to draft when ready.', 'success');
+      const missingFile = d.data.hasResumeInProfile && !d.data.resumeAttached;
+      if (missingFile) {
+         addToast('Success, but your resume file needs to be re-uploaded in Profile to attach.', 'info');
+      } else {
+         addToast('Email generated. Review it and send to draft when ready.', 'success');
+      }
     } catch (e: any) {
       setGenStatus('');
       addToast(e.message, 'error');
@@ -661,6 +668,10 @@ const App: React.FC = () => {
                   <div>
                      {resumeAttached ? 
                        <div className="file-badge has-resume">{ICONS.check} {resumeName}</div> :
+                       hasProfileResume ?
+                       <div className="file-badge no-resume" style={{ borderColor: 'var(--warn-text)', color: 'var(--warn-text)' }} title="The database knows your resume, but the physical file is missing from this server's disk.">
+                          {ICONS.alert} Re-upload resume in Profile to attach
+                       </div> :
                        <div className="file-badge no-resume">{ICONS.alert} No resume — add in Profile</div>
                      }
                   </div>

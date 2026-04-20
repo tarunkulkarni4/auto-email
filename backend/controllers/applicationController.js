@@ -152,8 +152,9 @@ const generateEmail = async (req, res) => {
         to: hrEmail || '',
         subject: emailData.subject,
         body: emailData.body,
-        resumeAttached,
+        resumeAttached, 
         resumeName: profile.resumeOriginalName || 'Resume.pdf',
+        hasResumeInProfile: !!profile.resumePath
       },
     });
   } catch (error) {

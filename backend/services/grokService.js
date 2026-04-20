@@ -148,8 +148,8 @@ Generate a uniquely phrased version with tone: ${randomStyle}. Salt: ${Date.now(
       let cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       
       const formatBodySpacing = (text) => {
-        // Force replace 3 or more newlines into exactly 2 newlines (to fix AI outputting \n\n\n\n)
-        let formatted = text.replace(/\n{3,}/g, '\n\n');
+        // Force replace 3 or more newlines (including \r and spaces between them) into exactly 2 newlines
+        let formatted = text.replace(/(\r?\n\s*){3,}/g, '\n\n');
         
         // If the AI somehow ONLY used single newlines, expand them
         if (!formatted.includes('\n\n') && formatted.includes('\n')) {
